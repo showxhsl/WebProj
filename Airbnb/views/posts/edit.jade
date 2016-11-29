@@ -19,6 +19,9 @@ block content
       .form-group
         label(for='content') Content
         textarea.form-control(id='content', rows='10', name='content', placeholder='content here')= post.content
+      .form-group
+        label(for='person') 예약 가능 인원
+        input.form-control(type='person', id='person', name='person', placeholder='Person')
 
       div.form-actions
         a.btn.btn-default(href='javascript:window.history.back();') 뒤로 

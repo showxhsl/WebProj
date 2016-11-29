@@ -1,4 +1,6 @@
 var express = require('express'),
+
+    todos = require('./todos'),
 // 유저를 require해서 사용함(위치는 ../models 아래 User라는 js 파일)
     Post = require('../models/Post');
     //라우팅을 한다.
@@ -13,9 +15,11 @@ var paginate = require('paginate')({
 function validateForm(form, options) {
   var title = form.title || "";
   var email = form.email || "";
+  var person = form.person||"";
   var content = form.content;
   title = title.trim();
   email = email.trim();
+  person = person.trim();
 
   if (!title) {
     return '제목을 입력해주세요.';
@@ -38,6 +42,9 @@ function validateForm(form, options) {
 
   if (form.password.length < 6) {
     return '비밀번호는 6글자 이상이어야 합니다.';
+  }
+  if (!form.person||form.person>=8||form.person.length>1){
+    return('인원 수를 입력해 주세요');
   }
 
   return null;
@@ -85,6 +92,7 @@ Post.findById({_id: req.params.id}, function(err, post) {
   post.title = req.body.title;
   post.email = req.body.email;
   post.content = req.body.content;
+  post.person = req.body.person;
   if (req.body.password) {
     post.password = req.body.password;
   }
@@ -131,6 +139,7 @@ router.post('/', function(req, res, next) {
     email: req.body.email,
     title: req.body.title,
     content: req.body.content,
+    person: req.body.person,
   });
   newPost.password = req.body.password;
   //저장되면 posts(index)페이지로 감

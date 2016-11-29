@@ -3,6 +3,7 @@ extends ../layout
 block content
   .container
     h1.page-header 글쓰기
+    h5 ※ 모든 값을 입력해 주세요
     form(action='/posts', method='POST')
       .form-group
         label(for='email') Email address
@@ -14,11 +15,15 @@ block content
         label(for='content') Content
         textarea.form-control(id='content', rows='10', name='content', placeholder='content here')
       .form-group
-        label(for='password') Password
+        label(for='password') Password(6자리 이상)
         input.form-control(type='password', id='password', name='password', placeholder='Password')
       .form-group
         label(for='password_confirmation') Password 확인
         input.form-control(type='password', id='password_confirmation', name='password_confirmation', placeholder='Password')
+      .form-group
+        label(for='person') 예약 가능 인원(숫자 1~8)
+        input.form-control(type='person', id='person', name='person', placeholder='Person')
+       
       div.form-actions
         a.btn.btn-default(href='javascript:window.history.back();') 뒤로 
         | 
