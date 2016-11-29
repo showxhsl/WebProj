@@ -1,5 +1,11 @@
+<<<<<<< HEAD
 // Airbnb
 // test
+=======
+//test
+//Airbnb
+//test3
+>>>>>>> 252801c490831e6d5b6a0f784612a64e3d41fe29
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
