@@ -1,16 +1,27 @@
 var mongoose = require('mongoose'),
+    bcrypt = require('bcryptjs'),
     Schema = mongoose.Schema;
-// data 타입
+
 var schema = new Schema({
   name: {type: String, required: true, trim: true},
-  email: {type: String, required: true, index: true, unique: true, trim: true},
+  email: {type: String, required: true, index: true, trim: true},
   password: {type: String},
-  createdAt: {type: Date, default: Date.now}
+  createdAt: {type: Date, default: Date.now},
+  facebook: {id: String, token: String, photo: String}
 }, {
   toJSON: { virtuals: true},
   toObject: {virtuals: true}
 });
-// mongodb로 보낸다.
+
+schema.methods.generateHash = function(password) {
+  var salt = bcrypt.genSaltSync(10);
+  return bcrypt.hashSync(password, salt);
+};
+
+schema.methods.validatePassword = function(password) {
+  return bcrypt.compareSync(password, this.password);
+};
+
 var User = mongoose.model('User', schema);
-// 유저라는 모듈을 만들고 나중에 require해서 사용한다.
+
 module.exports = User;

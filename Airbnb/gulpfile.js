@@ -9,7 +9,7 @@ var concat = require('gulp-concat');
 
 // Lint Task
 gulp.task('lint', function() {
-    return gulp.src(['app.js', 'routes/**/*.js', 'models/**/*.js'])
+    return gulp.src(['app.js', 'routes/**/*.js', 'models/**/*.js', 'config/**/*.js', 'public/javascripts/**/*.js'])
         .pipe(jshint())
         .pipe(jshint.reporter('default'));
 });

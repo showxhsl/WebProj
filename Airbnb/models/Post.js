@@ -4,17 +4,33 @@ var mongoose = require('mongoose'),
 // 제목/이메일/내용/비밀번호/만든시간/조회수 라서 저렇게 데이터 값을 만들었다.
 var schema = new Schema({
   title: {type: String, required: true, trim: true},
-  email: {type: String, required: true, index: true, unique: true, trim: true},
+  user: {type: Schema.Types.ObjectId, index: true, required: true},
+  email: {type: String, required: true, trim: true},
   content: {type: String, required: true, trim: true},
   password: {type: String},
   createdAt: {type: Date, default: Date.now},
   read: {type: Number, default: 0},
-  content: {type: String, required: true, trim: true},
   person:{type:String,required: true, trim: true}
 }, {
-  toJSON: { virtuals: true},
+  toJSON: { 
+    virtuals: true,
+    transform: function(post) {
+      return {
+        id: post._id.toString(),
+        email: post.email,
+        title: post.title,
+        content: post.content,
+        password: post.password,
+        createdAt: post.createdAt,
+        read: post.read,
+        person: post.person
+      };
+    }
+  },
   toObject: {virtuals: true}
 });
+
+
 
 var Post = mongoose.model('Post', schema);
 

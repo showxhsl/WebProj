@@ -1,11 +1,3 @@
-<<<<<<< HEAD
-// Airbnb
-// test
-=======
-//test
-//Airbnb
-//test3
->>>>>>> 252801c490831e6d5b6a0f784612a64e3d41fe29
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -16,10 +8,16 @@ var session = require('express-session');
 var methodOverride = require('method-override');
 var flash = require('connect-flash');
 var mongoose   = require('mongoose');
+var passport = require('passport');
+var configAuth = require('./config/auth');
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
-var posts = require('./routes/posts');
+var routes = require('./routes/index'),
+    users = require('./routes/users'),
+    todos = require('./routes/todos'),
+    tasks = require('./routes/tasks'),
+    posts = require('./routes/posts');
+var routeAuth = require('./routes/auth');
+
 var app = express();
 
 // view engine setup
@@ -48,19 +46,27 @@ app.use(session({
   secret: 'long-long-long-secret-string-1313513tefgwdsvbjkvasd'
 }));
 app.use(flash());
-
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/bower_components',  express.static(path.join(__dirname, '/bower_components')));
 
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use(function(req, res, next) {
-  res.locals.currentUser = req.session.user;
+  res.locals.currentUser = req.user;
   res.locals.flashMessages = req.flash();
   next();
 });
 
+configAuth(passport);
+
 app.use('/', routes);
 app.use('/users', users);
+app.use('/todos', todos);
+app.use('/tasks', tasks);
 app.use('/posts', posts);
+routeAuth(app, passport);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

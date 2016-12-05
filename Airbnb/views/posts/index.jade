@@ -5,30 +5,42 @@ block content
     h1.page-header List
     
     //- | total #{pagination.numPosts} posts
-    table.table.table-bordered
-      thead
-        tr
-          th 이메일
-          th 제목
-          th 날짜
-          th 조회수
-          th 예약 가능 인원
-          th
-      tbody
-        each post in posts
-          tr
-            td= post.email
-            td
-              a(href='/posts/#{post.id}')= post.title
-            td= moment(post.createdAt).format('YYYY-MM-DD HH:mm:ss')
-            td= post.read
-            td= post.person
-            td
-              a.btn.btn-xs.btn-default(href='/posts/#{post.id}/edit') 수정
-              | 
-              a.btn.btn-xs.btn-default(data-id=post.id, class='delete') 삭제
+    .row
+      .col-md-12
+        table.table.table-bordered
+          thead
+            tr
+              th 이메일
+              th 제목
+              th 날짜
+              th 조회수
+              th 예약 가능 인원
+              th
+          tbody
+            each post in posts
+              tr
+                td= post.email
+                //- td= post.email
+                td
+                  a(href='/posts/#{post.id}')= post.title
+                td= moment(post.createdAt).format('YYYY-MM-DD HH:mm:ss')
+                td= post.read
+                td= post.person
+                td
+                  a.btn.btn-xs.btn-default(href='/posts/#{post.id}/edit') 수정
+                  | 
+                  a.btn.btn-xs.btn-default(data-id=post.id, class='delete') 삭제
+    .row
+      .col-sm-1.col-xs-2
+        a.btn.btn-primary(href='/posts/new') 글쓰기
 
-    a.btn.btn-primary(href='/posts/new') 글쓰기
+      .col-sm-5.col-xs-10
+        form.search-form(role='search', method='GET', action='/posts/index')
+          .input-group
+            input.form-control(type='text', id='search_keyword', name='search_keyword', placeholder='Search the City')
+            span.input-group-btn
+              button.btn.btn-default(type='submit') 검색
+          
 
     != posts.pagination.render({baseUrl: '/posts/index'})
 
@@ -58,4 +70,4 @@ block content
         }
         return false;
       });
-            
+

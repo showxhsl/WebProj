@@ -1,6 +1,6 @@
 var express = require('express'),
 
-    todos = require('./todos'),
+    User = require('../models/User'),
 // 유저를 require해서 사용함(위치는 ../models 아래 User라는 js 파일)
     Post = require('../models/Post');
     //라우팅을 한다.
@@ -11,22 +11,33 @@ var paginate = require('paginate')({
 });
 
 
+function needAuth(req, res, next) {
+  if (req.isAuthenticated()) {
+    next();
+  } else {
+    res.status(401).json({message: 'Not authorized'});
+  }
+}
+
+router.get('/', needAuth, function(req, res, next) {
+  Post.find(function(err, posts) {
+    if (err) {
+      return res.status(500).json({message: 'internal error', desc: err});
+    }
+    res.json(posts);
+  });
+});
+
 // validating 검사작업
 function validateForm(form, options) {
   var title = form.title || "";
-  var email = form.email || "";
   var person = form.person||"";
   var content = form.content;
   title = title.trim();
-  email = email.trim();
   person = person.trim();
 
   if (!title) {
     return '제목을 입력해주세요.';
-  }
-
-  if (!email) {
-    return '이메일을 입력해주세요.';
   }
 
   if (!form.password && options.needPassword) {
@@ -43,23 +54,40 @@ function validateForm(form, options) {
   if (form.password.length < 6) {
     return '비밀번호는 6글자 이상이어야 합니다.';
   }
-  if (!form.person||form.person>=8||form.person.length>1){
-    return('인원 수를 입력해 주세요');
-  }
 
   return null;
 }
 
 /* index 페이지*/
 router.get('/index',function(req, res, next) {
-  Post.find().sort({createdAt: -1}).paginate({page:req.query.page}, function(err,posts){
-    if (err) {
-      return next(err);
-    }
-    res.render('posts/index',{
-      posts:posts
+
+  var search_keyword = req.query.search_keyword;
+  
+  // 검색어가 있으면
+  if(search_keyword){
+    Post.find({title: search_keyword}).sort({createdAt: -1}).paginate({page:req.query.page}, function(err,posts){
+      if (err) {
+        return next(err);
+      }
+      res.render('posts/index',{
+        posts:posts
+      });
     });
-  });
+  } else {
+  // 검색어가 없으면
+    Post.find().sort({createdAt: -1}).paginate({page:req.query.page}, function(err,posts){
+      if (err) {
+        return next(err);
+      }
+      res.render('posts/index',{
+        posts:posts
+      });
+    });
+  }
+
+
+
+
 });
 
 /* new 페이지 */
@@ -90,7 +118,6 @@ Post.findById({_id: req.params.id}, function(err, post) {
   }
 
   post.title = req.body.title;
-  post.email = req.body.email;
   post.content = req.body.content;
   post.person = req.body.person;
   if (req.body.password) {
@@ -133,10 +160,12 @@ router.post('/', function(req, res, next) {
   var err = validateForm(req.body,{needPassword: true});
   // 오류시 back 처리
   if (err) {
+    req.flash('danger', err);
     return res.redirect('back');
   }
   var newPost = new Post({
-    email: req.body.email,
+    user: req.user.id,
+    email: req.user.email,
     title: req.body.title,
     content: req.body.content,
     person: req.body.person,
@@ -151,6 +180,5 @@ router.post('/', function(req, res, next) {
     }
   });
 });
-
 
 module.exports = router;

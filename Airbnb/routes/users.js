@@ -1,22 +1,16 @@
 var express = require('express'),
-// 유저를 require해서 사용함(위치는 ../models 아래 User라는 js 파일)
     User = require('../models/User');
-    //라우팅을 한다.
 var router = express.Router();
 
-// 세션 유저
-
 function needAuth(req, res, next) {
-    if (req.session.user) {
-      next();
-    } else {
-      // app.js에 flash라는 함수를 사용
-      req.flash('danger', '로그인이 필요합니다.');
-      res.redirect('/signin');
-    }
+  if (req.isAuthenticated()) {
+    next();
+  } else {
+    req.flash('danger', '로그인이 필요합니다.');
+    res.redirect('/signin');
+  }
 }
 
-// 이메일 폼 확인 (회원가입)
 function validateForm(form, options) {
   var name = form.name || "";
   var email = form.email || "";
@@ -93,7 +87,7 @@ router.put('/:id', function(req, res, next) {
     user.name = req.body.name;
     user.email = req.body.email;
     if (req.body.password) {
-      user.password = req.body.password;
+      user.password = user.generateHash(req.body.password);
     }
 
     user.save(function(err) {
@@ -101,7 +95,7 @@ router.put('/:id', function(req, res, next) {
         return next(err);
       }
       req.flash('success', '사용자 정보가 변경되었습니다.');
-      res.redirect('/');
+      res.redirect('/users');
     });
   });
 });
@@ -112,7 +106,7 @@ router.delete('/:id', function(req, res, next) {
       return next(err);
     }
     req.flash('success', '사용자 계정이 삭제되었습니다.');
-    res.redirect('/signout');
+    res.redirect('/users');
   });
 });
 
@@ -137,17 +131,17 @@ router.post('/', function(req, res, next) {
     }
     if (user) {
       req.flash('danger', '동일한 이메일 주소가 이미 존재합니다.');
-      res.redirect('back');
+      return res.redirect('back');
     }
     var newUser = new User({
       name: req.body.name,
       email: req.body.email,
     });
-    newUser.password = req.body.password;
+    newUser.password = newUser.generateHash(req.body.password);
 
     newUser.save(function(err) {
       if (err) {
-        return next(err);
+        next(err);
       } else {
         req.flash('success', '가입이 완료되었습니다. 로그인 해주세요.');
         res.redirect('/');
