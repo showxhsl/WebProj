@@ -15,6 +15,9 @@ block content
               th 날짜
               th 조회수
               th 예약 가능 인원
+              th 국가
+              th 도시
+              th 요금
               th
           tbody
             each post in posts
@@ -26,10 +29,18 @@ block content
                 td= moment(post.createdAt).format('YYYY-MM-DD HH:mm:ss')
                 td= post.read
                 td= post.person
-                td
-                  a.btn.btn-xs.btn-default(href='/posts/#{post.id}/edit') 수정
-                  | 
-                  a.btn.btn-xs.btn-default(data-id=post.id, class='delete') 삭제
+                td= post.nation
+                td= post.city
+                td= post.money
+                  if(currentUser.email==post.email)
+                    td
+                      a.btn.btn-xs.btn-default(href='/posts/#{post.id}/edit') 수정
+                      | 
+                      a.btn.btn-xs.btn-default(data-id=post.id, class='delete') 삭제
+                  else
+                    td
+                      a.btn.btn-xs.btn-default(href='/todos/') 예약
+                    
     .row
       .col-sm-1.col-xs-2
         a.btn.btn-primary(href='/posts/new') 글쓰기
@@ -37,7 +48,7 @@ block content
       .col-sm-5.col-xs-10
         form.search-form(role='search', method='GET', action='/posts/index')
           .input-group
-            input.form-control(type='text', id='search_keyword', name='search_keyword', placeholder='Search the City')
+            input.form-control(type='text', id='search_keyword', name='search_keyword', placeholder='Search the Nation')
             span.input-group-btn
               button.btn.btn-default(type='submit') 검색
           

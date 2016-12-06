@@ -11,7 +11,10 @@ block content
       | (조회수 #{post.read})
       | (예약 가능 인원 : #{post.person})
     p.well(style='white-space:pre;')= post.content
-    
+    p.well(style='white-space:pre;')= post.city
+    p.well(style='white-space:pre;')= post.money
+    p.well(style='white-space:pre;')= post.convenience
+    p.well(style='white-space:pre;')= post.rule
     a.btn.btn-primary(href='/posts/new') 예약
     a.btn.btn-primary(href='/posts/index') 목록
 

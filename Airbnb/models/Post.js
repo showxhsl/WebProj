@@ -10,7 +10,13 @@ var schema = new Schema({
   password: {type: String},
   createdAt: {type: Date, default: Date.now},
   read: {type: Number, default: 0},
-  person:{type:String,required: true, trim: true}
+  person:{type:String,required: true, trim: true},
+  nation:{type:String,required: true, trim: true},
+  city: {type: String, required: true, trim: true},
+  money: {type: String, required: true, trim: true},
+  convenience: {type: String, required: true, trim: true},
+  rule: {type: String, required: true, trim: true}
+  
 }, {
   toJSON: { 
     virtuals: true,
@@ -23,7 +29,12 @@ var schema = new Schema({
         password: post.password,
         createdAt: post.createdAt,
         read: post.read,
-        person: post.person
+        person: post.person,
+        nation: post.nation,
+        city: post.city,
+        money: post.money,
+        convenience: post.convenience,
+        rule: post.rule,
       };
     }
   },

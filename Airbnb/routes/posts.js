@@ -33,8 +33,18 @@ function validateForm(form, options) {
   var title = form.title || "";
   var person = form.person||"";
   var content = form.content;
+  var nation = form.nation;
+  var city = form.city;
+  var money = form.money;
+  var convenience = form.convenience;
+  var rule = form.rule;
   title = title.trim();
   person = person.trim();
+  nation = nation.trim();
+  city = city.trim();
+  money = money.trim();
+  convenience = convenience.trim();
+  rule = rule.trim();
 
   if (!title) {
     return '제목을 입력해주세요.';
@@ -54,6 +64,18 @@ function validateForm(form, options) {
   if (form.password.length < 6) {
     return '비밀번호는 6글자 이상이어야 합니다.';
   }
+  if(!city){
+    return '도시를 입력해 주세요';
+  }
+  if(!money){
+    return '이용 금액을 입력해 주세요';
+  }
+  if(!convenience){
+    return '편의 시설을 입력해 주세요(없을 경우 : None)';
+  }
+  if(!rule){
+    return '이용 규칙을 입력해 주세요(없을 경우 : None)';
+  }
 
   return null;
 }
@@ -65,7 +87,7 @@ router.get('/index',function(req, res, next) {
   
   // 검색어가 있으면
   if(search_keyword){
-    Post.find({title: search_keyword}).sort({createdAt: -1}).paginate({page:req.query.page}, function(err,posts){
+    Post.find({nation: search_keyword}).sort({createdAt: -1}).paginate({page:req.query.page}, function(err,posts){
       if (err) {
         return next(err);
       }
@@ -120,6 +142,11 @@ Post.findById({_id: req.params.id}, function(err, post) {
   post.title = req.body.title;
   post.content = req.body.content;
   post.person = req.body.person;
+  post.nation = req.body.nation;
+  post.city = req.body.city;
+  post.money = req.body.money;
+  post.convenience = req.body.convenience;
+  post.rule = req.body.rule;
   if (req.body.password) {
     post.password = req.body.password;
   }
@@ -169,6 +196,12 @@ router.post('/', function(req, res, next) {
     title: req.body.title,
     content: req.body.content,
     person: req.body.person,
+    nation: req.body.nation,
+    city: req.body.city,
+    money: req.body.money,
+    convenience: req.body.convenience,
+    rule: req.body.rule,
+    
   });
   newPost.password = req.body.password;
   //저장되면 posts(index)페이지로 감
