@@ -94,6 +94,9 @@ a {
       margin: 20px 0;
       color: #bbb; }
 
+#checkIn, #checkOut {
+  margin-left: 5px; }
+
 form.todos {
   width: 100%;
   margin: 0 0 1em 0;

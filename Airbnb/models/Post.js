@@ -18,7 +18,7 @@ var schema = new Schema({
   rule: {type: String, required: true, trim: true}
   
 }, {
-  toJSON: { 
+  toJSON: {
     virtuals: true,
     transform: function(post) {
       return {

@@ -1,0 +1,35 @@
+extends ../layout
+
+block content
+  .container
+    h1.page-header 예약하기
+    form(action='/reservations', method='POST')
+        input(type="hidden", name="post_id", value="#{post_id}")
+        span(style="margin-right:20px")
+            label(for="checkIn") 체크인
+            input#checkIn(type='text', name='checkIn')
+        span
+            label(for="checkOut") 체크아웃
+            input#checkOut(type='text', name='checkOut')
+
+        .form-group(style="margin-top:20px;")
+            label(for='person') 예약 인원
+            select.form-control(name='person', id='person')
+                option 1명
+                option 2명
+                option 3명
+                option 4명
+                option 5명
+                option 6명
+                option 7명
+                option 8명
+      
+            div.form-actions
+                a.btn.btn-default(href='javascript:window.history.back();') 뒤로 
+                | 
+                button.btn.btn-primary(type='submit') 예약
+    script.
+        $( function() {
+            $( "#checkIn" ).datepicker();
+            $( "#checkOut" ).datepicker();
+        } );

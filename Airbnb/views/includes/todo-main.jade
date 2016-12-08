@@ -10,6 +10,10 @@ form#form-task.form-inline(class='todos')
           option(value='업무') 업무
           option(value='기타') 기타
       .form-group
+        select.form-control(name='month')
+          option(value='1월',selected) 1월
+          option(value='2월') 2월
+      .form-group
         select.form-control(name='priority')
           option(value='3') 중요
           option(value='2', selected) 보통
