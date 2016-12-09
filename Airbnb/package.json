@@ -17,6 +17,7 @@
     "lodash": "^3.10.1",
     "method-override": "^2.3.5",
     "moment": "^2.10.6",
+    "mongojs": "^2.4.0",
     "mongoose": "^4.1.11",
     "morgan": "~1.6.1",
     "node-sass-middleware": "0.8.0",

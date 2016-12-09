@@ -5,6 +5,7 @@ var mongoose = require('mongoose'),
 var schema = new Schema({
   user: {type: Schema.Types.ObjectId, index: true, required: true},
   post: {type: Schema.Types.ObjectId, index: true, required: true},
+  email: {type: String, required: true, trim: true}, 
   checkIn: {type: Date, required: true, trim: true},
   checkOut: {type: Date, required: true, trim: true},
   person:{type:String,required: true, trim: true},
@@ -14,6 +15,7 @@ var schema = new Schema({
     virtuals: true,
     transform: function(reservations) {
       return {
+        email: reservations.email,
         checkIn: reservations.checkIn,
         checkOut: reservations.checkOut,
         person: reservations.person,

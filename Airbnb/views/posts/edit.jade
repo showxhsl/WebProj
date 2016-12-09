@@ -8,9 +8,9 @@ block content
       h1.page-header 글쓰기
 
     form(action = (post.id) ? "/posts/#{post.id}?_method=PUT" : "/posts", method='POST')
-      .form-group
-        label(for='password') Password
-        input.form-control(type='password', id='password', name='password', placeholder='Password')
+      //- .form-group
+      //-   label(for='password') Password
+      //-   input.form-control(type='password', id='password', name='password', placeholder='Password')
       .form-group
         label(for='title') Title
         input.form-control(type='text', id='title', name='title', placeholder='title', value=post.title)

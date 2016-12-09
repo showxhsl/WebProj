@@ -7,7 +7,7 @@ var schema = new Schema({
   user: {type: Schema.Types.ObjectId, index: true, required: true},
   email: {type: String, required: true, trim: true},
   content: {type: String, required: true, trim: true},
-  password: {type: String},
+  // password: {type: String},
   createdAt: {type: Date, default: Date.now},
   read: {type: Number, default: 0},
   person:{type:String,required: true, trim: true},
@@ -15,7 +15,8 @@ var schema = new Schema({
   city: {type: String, required: true, trim: true},
   money: {type: String, required: true, trim: true},
   convenience: {type: String, required: true, trim: true},
-  rule: {type: String, required: true, trim: true}
+  rule: {type: String, required: true, trim: true},
+  fileupload:{type: Buffer, contentType: String}
   
 }, {
   toJSON: {
@@ -35,6 +36,7 @@ var schema = new Schema({
         money: post.money,
         convenience: post.convenience,
         rule: post.rule,
+        fileupload: post.file,
       };
     }
   },

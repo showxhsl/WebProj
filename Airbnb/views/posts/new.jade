@@ -10,12 +10,12 @@ block content
       .form-group
         label(for='content') Content
         textarea.form-control(id='content', rows='10', name='content', placeholder='content here')
-      .form-group
-        label(for='password') Password(6자리 이상)
-        input.form-control(type='password', id='password', name='password', placeholder='Password')
-      .form-group
-        label(for='password_confirmation') Password 확인
-        input.form-control(type='password', id='password_confirmation', name='password_confirmation', placeholder='Password')
+      //- .form-group
+      //-   label(for='password') Password(6자리 이상)
+      //-   input.form-control(type='password', id='password', name='password', placeholder='Password')
+      //- .form-group
+      //-   label(for='password_confirmation') Password 확인
+      //-   input.form-control(type='password', id='password_confirmation', name='password_confirmation', placeholder='Password')
       .form-group
         label(for='person') 예약 가능 인원
         select.form-control(name='person', id='person')
@@ -106,7 +106,10 @@ block content
       .form-group
         label(for='rule') 이용 규칙
         input.form-control(id='rule',rows='4', name='rule', placeholder='이용 규칙')
-
+      .form-group
+        label(for='fileupload')  Select a file to upload
+        input#fileupload(type='file', name='fileupload', value='fileupload')
+        
       
       div.form-actions
         a.btn.btn-default(href='javascript:window.history.back();') 뒤로 

@@ -2,7 +2,9 @@ var express = require('express'),
 
     User = require('../models/User'),
 // 유저를 require해서 사용함(위치는 ../models 아래 User라는 js 파일)
-    Post = require('../models/Post');
+    Post = require('../models/Post'),
+    Comment = require('../models/comment'),
+    Reservation = require('../models/Reservation');
     //라우팅을 한다.
 var router = express.Router();
 var mongoose   = require('mongoose');
@@ -11,9 +13,17 @@ var paginate = require('paginate')({
 });
 
 var countries = [
-  "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon", "Canada", "Cape Verde", "Central African Republic", "Chad", "Chile", "China", "Colombi", "Comoros", "Congo (Brazzaville)", "Congo", "Costa Rica", "Cote d'Ivoire", "Croatia", "Cuba", "Cyprus", "Czech Republic", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "East Timor (Timor Timur)", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Gambia, The", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea, North", "Korea, South", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Macedonia", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepa", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania", "Russia", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia and Montenegro", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "Spain", "Sri Lanka", "Sudan", "Suriname", "Swaziland", "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
- ];
+  "서울", "부산", "대구", "인천", "광주", "대전", "울산", "경기", "충북", "충남", "강원", "경북", "경남", "전북", "전남", "제주"];
 
+
+router.get('/', function(req, res, next) {
+  Post.find({}, function(err, docs) {
+    if (err) {
+      return next(err);
+    }
+    res.render('posts/index', {posts: docs});
+  });
+});
 
 function needAuth(req, res, next) {
   if (req.isAuthenticated()) {
@@ -28,7 +38,12 @@ router.get('/', needAuth, function(req, res, next) {
     if (err) {
       return res.status(500).json({message: 'internal error', desc: err});
     }
+    Comment.find({posts: posts.id}, function(err, comments) {
+      if (err) {
+        return next(err);
+      }
     res.json(posts);
+    });
   });
 });
 
@@ -42,6 +57,7 @@ function validateForm(form, options) {
   var money = form.money;
   var convenience = form.convenience;
   var rule = form.rule;
+  var fileupload = form.fileupload;
   title = title.trim();
   person = person.trim();
   nation = nation.trim();
@@ -54,20 +70,20 @@ function validateForm(form, options) {
     return '제목을 입력해주세요.';
   }
 
-  if (!form.password && options.needPassword) {
-    return '비밀번호를 입력해주세요.';
-  }
+  // if (!form.password && options.needPassword) {
+  //   return '비밀번호를 입력해주세요.';
+  // }
   if(!content){
     return '내용을 입력해 주세요';
   }
 
-  if (form.password !== form.password_confirmation) {
-    return '비밀번호가 일치하지 않습니다.';
-  }
+  // if (form.password !== form.password_confirmation) {
+  //   return '비밀번호가 일치하지 않습니다.';
+  // }
 
-  if (form.password.length < 6) {
-    return '비밀번호는 6글자 이상이어야 합니다.';
-  }
+  // if (form.password.length < 6) {
+  //   return '비밀번호는 6글자 이상이어야 합니다.';
+  // }
   if(!city){
     return '도시를 입력해 주세요';
   }
@@ -149,9 +165,7 @@ Post.findById({_id: req.params.id}, function(err, post) {
   post.money = req.body.money;
   post.convenience = req.body.convenience;
   post.rule = req.body.rule;
-  if (req.body.password) {
-    post.password = req.body.password;
-  }
+  post.fileupload= req.body.fileupload;
   // 저장이 완료 되면 posts(index)페이지로 돌아간다.
   post.save(function(err) {
     if (err) {
@@ -177,9 +191,15 @@ router.get('/:id', function(req, res, next) {
     if (err) {
       return next(err);
     }
+    Comment.find({post: post.id}, function(err, comments) {
+      if (err) {
+        return next(err);
+      }
     post.read++;
     post.save();
-    res.render('posts/show', {post:post});
+    
+    res.render('posts/show', {post:post, comments: comments});
+    });
   });
 });
 
@@ -203,6 +223,7 @@ router.post('/', function(req, res, next) {
     money: req.body.money,
     convenience: req.body.convenience,
     rule: req.body.rule,
+    fileupload: req.body.fileupload
     
   });
   newPost.password = req.body.password;
@@ -213,6 +234,26 @@ router.post('/', function(req, res, next) {
     } else {
       res.redirect('/posts/index');
     }
+  });
+});
+
+router.post('/:id/comments', function(req, res, next) {
+  var comment = new Comment({
+    post: req.params.id,
+    email: req.user.email,
+    content: req.body.content
+  });
+
+  comment.save(function(err) {
+    if (err) {
+      return next(err);
+    }
+    Post.findByIdAndUpdate(req.params.id, {$inc: {numComment: 1}}, function(err) {
+      if (err) {
+        return next(err);
+      }
+      res.redirect('/posts/' + req.params.id);
+    });
   });
 });
 

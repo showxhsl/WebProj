@@ -67,7 +67,7 @@ router.get('/index/:id',function(req, res, next) {
     res.render('reservations/index', { reservation: reservation});
   });
   
-})
+});
 
 
 /* new 페이지 */
@@ -89,7 +89,8 @@ router.post('/', function(req, res, next) {
     checkIn: new Date(req.body.checkIn),
     checkOut: new Date(req.body.checkOut),
     person: req.body.person,
-    willCancel: false
+    willCancel: false,
+    email: req.user.email,
   });
   //저장되면 posts(index)페이지로 감
   reservation.save(function(err) {
