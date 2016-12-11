@@ -3,9 +3,9 @@ extends ../layout
 block content
   .container
     if post.id
-      h1.page-header 글수정
+      h1.page-header 호스팅 수정
     else
-      h1.page-header 글쓰기
+      h1.page-header 호스팅 하기
 
     form(action = (post.id) ? "/posts/#{post.id}?_method=PUT" : "/posts", method='POST')
       //- .form-group
@@ -32,9 +32,22 @@ block content
        .form-group
         label(for='nation') 도시 선택
         select.form-control(name='nation', id='nation')
-          -for(i=0; i<countries.length; i++){
-            option= countries[i]
-          -}
+          option 서울
+          option 부산
+          option 대구
+          option 인천
+          option 광주
+          option 대전
+          option 울산
+          option 경기
+          option 충북
+          option 충남
+          option 강원
+          option 경북
+          option 경남
+          option 전북
+          option 전남
+          option 제주
       .form-group
         label(for='city') 도시 상세 주소
         input#sample5_address.form-control(type='text', name ='city',placeholder='주소')
