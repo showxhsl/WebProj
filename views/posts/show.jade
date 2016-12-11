@@ -1,0 +1,130 @@
+extends ../layout
+
+block content
+  .container
+    h1.page-header= post.title
+    p
+      b by #{post.email}
+      | 
+      span at #{moment(post.createdAt).format('YYYY-MM-DD HH:mm:ss')} 
+      | 
+      | (조회수 #{post.read})
+      | (예약 가능 인원 : #{post.person})
+    p.well(style='white-space:pre;')= post.content
+    p.well(style='white-space:pre;')= post.city
+    p.well(style='white-space:pre;')= post.money
+    p.well(style='white-space:pre;')= post.convenience
+    p.well(style='white-space:pre;')= post.rule
+    p.well(style='white-space:pre;')= post.fileupload
+
+          #map(style='width:100%;height:350px;')
+            script(src='http://dmaps.daum.net/map_js_init/postcode.v2.js')
+            script(src='//apis.daum.net/maps/maps3.js?apikey=83cb0a10ddcf0d0cbf3e56cc8710d39c&libraries=services')
+            script.
+              // 마커를 클릭하면 장소명을 표출할 인포윈도우 입니다
+              var infowindow = new daum.maps.InfoWindow({zIndex:1});
+              var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+              mapOption = {
+              center: new daum.maps.LatLng(37.566826, 126.9786567), // 지도의 중심좌표
+              level: 3 // 지도의 확대 레벨
+              };
+              // 지도를 생성합니다
+              var map = new daum.maps.Map(mapContainer, mapOption);
+              // 장소 검색 객체를 생성합니다
+              var ps = new daum.maps.services.Places();
+              // 키워드로 장소를 검색합니다
+              var city = !{JSON.stringify(post.city)};
+              // 키워드 검색 완료 시 호출되는 콜백함수 입니다
+              function placesSearchCB (status, data, pagination) {
+              if (status === daum.maps.services.Status.OK) {
+              // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
+              // LatLngBounds 객체에 좌표를 추가합니다
+              var bounds = new daum.maps.LatLngBounds();
+              for (var i=0; i<data.places.length; i++) {
+              displayMarker(data.places[i]);
+              bounds.extend(new daum.maps.LatLng(data.places[i].latitude, data.places[i].longitude));
+              }
+              // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+              map.setBounds(bounds);
+              }
+              }
+              // 지도에 마커를 표시하는 함수입니다
+              function displayMarker(place) {
+              // 마커를 생성하고 지도에 표시합니다
+              var marker = new daum.maps.Marker({
+              map: map,
+              position: new daum.maps.LatLng(place.latitude, place.longitude)
+              });
+              // 마커에 클릭이벤트를 등록합니다
+              daum.maps.event.addListener(marker, 'click', function() {
+              // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
+              infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place.title + '</div>');
+              infowindow.open(map, marker);
+              });
+              }
+
+
+
+          #map(style='width:100%;height:350px;')
+            script(src='http://dmaps.daum.net/map_js_init/postcode.v2.js')
+            script(src='//apis.daum.net/maps/maps3.js?apikey=83cb0a10ddcf0d0cbf3e56cc8710d39c&libraries=services')  
+            script.
+              var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+              mapOption = {
+              center: new daum.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
+              level: 3 // 지도의 확대 레벨
+              };
+              // 지도를 생성합니다
+              var map = new daum.maps.Map(mapContainer, mapOption);
+              // 주소-좌표 변환 객체를 생성합니다
+              var geocoder = new daum.maps.services.Geocoder();
+              // 주소로 좌표를 검색합니다
+              geocoder.addr2coord(city, function(status, result) {
+              // 정상적으로 검색이 완료됐으면
+              if (status === daum.maps.services.Status.OK) {
+              var coords = new daum.maps.LatLng(result.addr[0].lat, result.addr[0].lng);
+              // 결과값으로 받은 위치를 마커로 표시합니다
+              var marker = new daum.maps.Marker({
+              map: map,
+              position: coords
+              });
+              // 인포윈도우로 장소에 대한 설명을 표시합니다
+              var infowindow = new daum.maps.InfoWindow({
+              content: '<div style="width:150px;text-align:center;padding:6px 0;">Home</div>'
+              });
+              infowindow.open(map, marker);
+              // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
+              map.setCenter(coords);
+              }
+              });
+
+    a.btn.btn-primary(href='/posts/new') 예약
+    a.btn.btn-primary(href='/posts/index') 목록
+
+
+    h3 Comment (#{post.numComment})
+    table.table
+      tr
+        th email
+        th content
+        th time
+      each comment in comments
+        tr
+          td= comment.email
+          td= comment.content
+          td= moment(comment.createdAt).format('YYYY/MM/DD')
+
+
+
+    
+    form.form-inline(action='/posts/' + post._id + '/comments', method='POST')
+      .form-group
+        label.sr-only(for='content') content
+        input.form-control(name='content', size=50, placeholder='content')
+      button.btn.btn-info 댓글저장
+
+                
+      
+                
+
+    

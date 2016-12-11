@@ -1,0 +1,24 @@
+extends ../layout
+
+block content
+  .container
+    h1.page-header List
+    
+    //- | total #{pagination.numPosts} posts
+    .row
+      .col-md-12
+        table.table.table-bordered
+          thead
+            tr
+              th 체크인
+              th 체크아웃
+              th 예약 인원
+          tbody
+            tr
+              td= moment(reservation.checkIn).format("YY/MM/DD")
+              td= moment(reservation.checkOut).format("YY/MM/DD")
+              td= reservation.person
+              td= reservation.email
+
+        a.btn.btn-default(href='javascript:window.history.back();') 뒤로 
+      

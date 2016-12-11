@@ -1,0 +1,117 @@
+extends ../layout
+
+block content
+  .container
+    h1.page-header 글쓰기
+    form(action='/posts', method='POST')
+      .form-group
+        label(for='title') Title
+        input.form-control(type='text', id='title', name='title', placeholder='Title')
+      .form-group
+        label(for='content') Content
+        textarea.form-control(id='content', rows='10', name='content', placeholder='content here')
+      //- .form-group
+      //-   label(for='password') Password(6자리 이상)
+      //-   input.form-control(type='password', id='password', name='password', placeholder='Password')
+      //- .form-group
+      //-   label(for='password_confirmation') Password 확인
+      //-   input.form-control(type='password', id='password_confirmation', name='password_confirmation', placeholder='Password')
+      .form-group
+        label(for='person') 예약 가능 인원
+        select.form-control(name='person', id='person')
+          option 1명
+          option 2명
+          option 3명
+          option 4명
+          option 5명
+          option 6명
+          option 7명
+          option 8명
+       
+       .form-group
+        label(for='nation') 국가 선택
+        select.form-control(name='nation', id='nation')
+          -for(i=0; i<countries.length; i++){
+            option= countries[i]
+          -}
+      .form-group
+        label(for='city') 도시 상세 주소
+        input#sample5_address.form-control(type='text', name ='city',placeholder='주소')
+        input(type='button', onclick='sample5_execDaumPostcode()', value='주소 검색', class="btn btn-default")
+        br
+        #map(style='width:300px;height:300px;margin-top:10px;display:none')
+        script(src='http://dmaps.daum.net/map_js_init/postcode.v2.js')
+        script(src='//apis.daum.net/maps/maps3.js?apikey=83cb0a10ddcf0d0cbf3e56cc8710d39c&libraries=services')
+        script.
+          var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+          mapOption = {
+          center: new daum.maps.LatLng(37.537187, 127.005476), // 지도의 중심좌표
+          level: 5 // 지도의 확대 레벨
+          };
+          //지도를 미리 생성
+          var map = new daum.maps.Map(mapContainer, mapOption);
+          //주소-좌표 변환 객체를 생성
+          var geocoder = new daum.maps.services.Geocoder();
+          //마커를 미리 생성
+          var marker = new daum.maps.Marker({
+          position: new daum.maps.LatLng(37.537187, 127.005476),
+          map: map
+          });
+          function sample5_execDaumPostcode() {
+          new daum.Postcode({
+          oncomplete: function(data) {
+          // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+          // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+          var fullAddr = data.address; // 최종 주소 변수
+          var extraAddr = ''; // 조합형 주소 변수
+          // 기본 주소가 도로명 타입일때 조합한다.
+          if(data.addressType === 'R'){
+          //법정동명이 있을 경우 추가한다.
+          if(data.bname !== ''){
+          extraAddr += data.bname;
+          }
+          // 건물명이 있을 경우 추가한다.
+          if(data.buildingName !== ''){
+          extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+          }
+          // 조합형주소의 유무에 따라 양쪽에 괄호를 추가하여 최종 주소를 만든다.
+          fullAddr += (extraAddr !== '' ? ' ('+ extraAddr +')' : '');
+          }
+          // 주소 정보를 해당 필드에 넣는다.
+          document.getElementById("sample5_address").value = fullAddr;
+          // 주소로 좌표를 검색
+          geocoder.addr2coord(data.address, function(status, result) {
+          // 정상적으로 검색이 완료됐으면
+          if (status === daum.maps.services.Status.OK) {
+          // 해당 주소에 대한 좌표를 받아서
+          var coords = new daum.maps.LatLng(result.addr[0].lat, result.addr[0].lng);
+          // 지도를 보여준다.
+          mapContainer.style.display = "block";
+          map.relayout();
+          // 지도 중심을 변경한다.
+          map.setCenter(coords);
+          // 마커를 결과값으로 받은 위치로 옮긴다.
+          marker.setPosition(coords)
+          }
+          });
+          }
+          }).open();
+          }
+      .form-group
+        label(for='money') 숙소 요금
+        input.form-control(id='money', name='money', placeholder='숙소 요금')
+      .form-group
+        label(for='convenience') 주변 편의 시설
+        input.form-control(id='convenience', name='convenience', placeholder='편의 시설')
+      .form-group
+        label(for='rule') 이용 규칙
+        input.form-control(id='rule',rows='4', name='rule', placeholder='이용 규칙')
+      .form-group
+        label(for='fileupload')  Select a file to upload
+        input#fileupload(type='file', name='fileupload', value='fileupload')
+        
+      
+      div.form-actions
+        a.btn.btn-default(href='javascript:window.history.back();') 뒤로 
+        | 
+        button.btn.btn-primary(type='submit') 글쓰기
