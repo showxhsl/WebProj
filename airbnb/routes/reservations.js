@@ -64,7 +64,7 @@ router.get('/index/:id',function(req, res, next) {
     if (err) {
       return res.status(500).json({message: 'internal error', desc: err});
     }
-    res.render('reservations/index', { reservation: reservation});
+    res.render('reservations/index', {reservation: reservation});
   });
   
 });

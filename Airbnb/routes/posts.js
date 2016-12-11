@@ -11,6 +11,7 @@ var mongoose   = require('mongoose');
 var paginate = require('paginate')({
   mongoose: mongoose
 });
+var _ = require('lodash');
 
 var countries = [
   "서울", "부산", "대구", "인천", "광주", "대전", "울산", "경기", "충북", "충남", "강원", "경북", "경남", "전북", "전남", "제주"];
@@ -21,7 +22,12 @@ router.get('/', function(req, res, next) {
     if (err) {
       return next(err);
     }
-    res.render('posts/index', {posts: docs});
+    Reservation.find({}, function(err, docs) {
+    if (err) {
+      return next(err);
+    }
+      res.render('posts/index', {posts: docs},{reservations: docs});
+    });
   });
 });
 
@@ -42,7 +48,12 @@ router.get('/', needAuth, function(req, res, next) {
       if (err) {
         return next(err);
       }
-    res.json(posts);
+      Reservation.find({email: req.user.email}, function(err, reservations) {
+      if (err) {
+        return next(err);
+      }
+        res.json(posts);
+      });
     });
   });
 });
@@ -111,23 +122,40 @@ router.get('/index',function(req, res, next) {
       if (err) {
         return next(err);
       }
+      // 
+      Reservation.find({user: req.user.id}, function(err, reservations) {
+        if (err) {
+          return next(err);
+        }
       res.render('posts/index',{
-        posts:posts
+        posts:posts, reservations:reservations
+        });
       });
     });
   } else {
   // 검색어가 없으면
     Post.find().sort({createdAt: -1}).paginate({page:req.query.page}, function(err,posts){
-      console.log(posts);
       if (err) {
         return next(err);
       }
+      Reservation.find({}, function(err, reservations) {
+        if (err) {
+          return next(err);
+        }
+      // posts를 하나하나 돌면서 reservations중에 해당 post아이디를 가진 객체가 있으면
+      // 그 post의 reservation에 해당 예약 데이터의 id를 넣고 없으면 undefined를 넣는다.
+      // 이렇게 하면 index.jade 레이아웃에서 posts로 반복문을 돌면서
+      // 해당 post.reservation이 undefined인지 아닌지를 보고 예약중인지 아닌지를 확인할 수 있다.
+      posts.map(function(item){
+        var reservation_item = _.find(reservations, { 'post': item._id });
+        item.reservation = reservation_item ? reservation_item._id : undefined;
+      });
       res.render('posts/index',{
-        posts:posts
+        posts:posts, reservations:reservations
+        });
       });
     });
   }
-
 });
 
 /* new 페이지 */
@@ -195,10 +223,15 @@ router.get('/:id', function(req, res, next) {
       if (err) {
         return next(err);
       }
-    post.read++;
-    post.save();
+      Reservation.find({email: req.user.email}, function(err, reservation) {
+        if (err) {
+          return next(err);
+        }
+      post.read++;
+      post.save();
     
-    res.render('posts/show', {post:post, comments: comments});
+      res.render('posts/show', {post:post, comments: comments, reservation: reservation});
+      });
     });
   });
 });

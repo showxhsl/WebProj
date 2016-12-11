@@ -23,7 +23,6 @@ block content
             each post in posts
               tr
                 td= post.email
-                //- td= post.email
                 td
                   a(href='/posts/#{post.id}')= post.title
                 td= moment(post.createdAt).format('YYYY-MM-DD HH:mm:ss')
@@ -32,15 +31,19 @@ block content
                 td= post.nation
                 td= post.city
                 td= post.money
-                  if(currentUser.email==post.email)
+                  //- 숙소가 로그인 한 유저의 숙소인지 체크
+                  if currentUser._id.toString() == post.user.toString() 
                     td
                       a.btn.btn-xs.btn-default(href='/posts/#{post.id}/edit') 수정
-                      | 
                       a.btn.btn-xs.btn-default(data-id=post.id, class='delete') 삭제
                   else
                     td
-                      a.btn.btn-xs.btn-default(href='/reservations/new/#{post.id}') 예약
-                    
+                      //- 로그인한 유저가 해당 숙소에 예약 중인지 체크
+                      if post.reservation
+                          a.btn.btn-xs.btn-default(href='/reservations/index/#{post.reservation}') 예약중
+                      else
+                          a.btn.btn-xs.btn-default(href='/reservations/new/#{post.id}') 예약
+                  
     .row
       .col-sm-1.col-xs-2
         a.btn.btn-primary(href='/posts/new') 글쓰기
