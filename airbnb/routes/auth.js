@@ -16,7 +16,7 @@ module.exports = function(app, passport) {
     }),
     function(req, res, next) {
       req.flash('success', '로그인되었습니다.');
-      res.redirect('/todos');
+      res.redirect('/posts/index');
     }
   );
 

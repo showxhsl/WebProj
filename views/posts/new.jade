@@ -29,7 +29,7 @@ block content
           option 8명
        
        .form-group
-        label(for='nation') 국가 선택
+        label(for='nation') 도시 선택
         select.form-control(name='nation', id='nation')
           -for(i=0; i<countries.length; i++){
             option= countries[i]
@@ -114,4 +114,4 @@ block content
       div.form-actions
         a.btn.btn-default(href='javascript:window.history.back();') 뒤로 
         | 
-        button.btn.btn-primary(type='submit') 글쓰기
+        button.btn.btn-primary(type='submit') 호스팅하기
