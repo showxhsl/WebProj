@@ -13,6 +13,16 @@ form#form-task.form-inline(class='todos')
         select.form-control(name='month')
           option(value='1월',selected) 1월
           option(value='2월') 2월
+          option(value='3월') 3월
+          option(value='4월') 4월
+          option(value='5월') 5월
+          option(value='6월') 6월
+          option(value='7월') 7월
+          option(value='8월') 8월
+          option(value='9월') 9월
+          option(value='10월') 10월
+          option(value='11월') 11월
+          option(value='12월') 12월
       .form-group
         select.form-control(name='priority')
           option(value='3') 중요
@@ -36,6 +46,9 @@ script#task-template(type='text/template').
         <%= category %>
       </span>
     <% } %>
+    <span class='month p<%= month %>'>
+      <%= (month === 1월) ? "1월" : ((month === 2월) ? "2월":   ((month === 3월) ? "3월":  ((month === 4월) ? "4월":  ((month === 5월) ? "5월":   ((month === 6월) ? "6월":   ((month === 7월) ? "7월":   ((month === 8월) ? "8월":   ((month === 9월) ? "9월":   ((month === 10월) ? "10월":   ((month === 11월) ? "11월":   "12월") %>
+    </span>
     <span class='priority p<%= priority %>'>
       <%= (priority === 3) ? "중요" : ((priority === 1) ? "사소": "보통") %>
     </span>
