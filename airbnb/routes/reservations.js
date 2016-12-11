@@ -41,30 +41,6 @@ function validateForm(form, options) {
 }
 
 
-router.get('/', function(req, res, next) {
-  Post.find({}, function(err, docs) {
-    if (err) {
-      return next(err);
-    }
-    Reservation.find({}, function(err, docs) {
-    if (err) {
-      return next(err);
-    }
-      res.render('posts/index', {posts: docs},{reservations: docs});
-    });
-  });
-});
-
-router.delete('/:id', function(req, res, next) {
-  Post.findOneAndRemove({_id: req.params.id}, function(err) {
-    if (err) {
-      return next(err);
-    }
-    res.redirect('/posts/index');
-  });
-});
-
-
 function needAuth(req, res, next) {
   if (req.isAuthenticated()) {
     next();

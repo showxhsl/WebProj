@@ -29,214 +29,87 @@ block content
           option 7명
           option 8명
 
-        .form-group
-        label(for='nation') 국가 선택
+       .form-group
+        label(for='nation') 도시 선택
         select.form-control(name='nation', id='nation')
-          option Afghanistan 
-          option Albania 
-          option Algeria 
-          option Andorra 
-          option Angola 
-          option Antigua and Barbuda 
-          option Argentina 
-          option Armenia 
-          option Australia 
-          option Austria 
-          option Azerbaijan 
-          option Bahamas 
-          option Bahrain 
-          option Bangladesh 
-          option Barbados 
-          option Belarus 
-          option Belgium 
-          option Belize
-          option Benin 
-          option Bhutan 
-          option Bolivia 
-          option Bosnia and Herzegovina 
-          option Botswana 
-          option Brazil 
-          option Brunei 
-          option Bulgaria 
-          option Burkina Faso 
-          option Burundi 
-          option Cambodia 
-          option Cameroon 
-          option Canada 
-          option Cape Verde 
-          option Central African Republic 
-          option Chad 
-          option Chile 
-          option China 
-          option Colombi 
-          option Comoros 
-          option Congo (Brazzaville) 
-          option Congo 
-          option Costa Rica 
-          option Cote d'option Ivoioption re 
-          option Croat  ia   
-          option Cuba
-          option Cyprus 
-          option Czech Republic 
-          option Denmark 
-          option Djibouti 
-          option Dominica 
-          option Dominican Republic 
-          option East Timor (Timor Timur) 
-          option Ecuador 
-          option Egypt 
-          option El Salvador 
-          option Equatorial Guinea 
-          option Eritrea 
-          option Estonia 
-          option Ethiopia 
-          option Fiji 
-          option Finland 
-          option France 
-          option Gabon 
-          option Gambia The 
-          option Georgia 
-          option Germany 
-          option Ghana 
-          option Greece 
-          option Grenada 
-          option Guatemala 
-          option Guinea 
-          option Guinea-Bissau 
-          option Guyana 
-          option Haiti 
-          option Honduras 
-          option Hungary 
-          option Iceland 
-          option India 
-          option Indonesia 
-          option Iran 
-          option Iraq 
-          option Ireland 
-          option Israel 
-          option Italy 
-          option Jamaica 
-          option optionJapan 
-          option Jordan 
-          option Kazakhstan 
-          option Kenya 
-          option Kiribati 
-          option Korea North 
-          option Korea South 
-          option Kuwait 
-          option Kyrgyzstan 
-          option Laos 
-          option Latvia 
-          option Lebanon 
-          option Lesotho 
-          option Liberia 
-          option Libya 
-          option Liechtenstein 
-          option Lithuania 
-          option Luxembourg 
-          option Macedonia 
-          option Madagascar 
-          option Malawi 
-          option Malaysia 
-          option Maldives 
-          option Mali 
-          option Malta 
-          option Marshall Islands 
-          option Mauritania 
-          option Mauritius 
-          option Mexico
-          option Micronesia 
-          option Moldova 
-          option Monaco 
-          option Mongolia 
-          option Morocco 
-          option Mozambique 
-          option Myanmar 
-          option Namibia
-          option Nauru 
-          option Nepa 
-          option Netherlands 
-          option New Zealand 
-          option Nicaragua 
-          option Niger 
-          option Nigeria 
-          option Norway 
-          option Oman 
-          option Pakistan 
-          option Palau 
-          option Panama 
-          option Papua New Guinea 
-          option Paraguay 
-          option Peru
-          option Philippines 
-          option Poland 
-          option Portugal 
-          option Qatar 
-          option Romania 
-          option Russia 
-          option Rwanda 
-          option Saint Kitts and Nevis 
-          option Saint Lucia 
-          option Saint Vincent 
-          option Samoa 
-          option San Marino 
-          option Sao Tome and Principe 
-          option Saudi Arabia Senegal 
-          option Serbia and Montenegro 
-          option Seychelles 
-          option Sierra Leone 
-          option Singapore 
-          option Slovakia 
-          option Slovenia 
-          option Solomon Islands 
-          option Somalia 
-          option South Africa 
-          option Spain 
-          option Sri Lanka 
-          option Sudan 
-          option Suriname 
-          option Swaziland 
-          option Sweden 
-          option Switzerland 
-          option Syria 
-          option Taiwan 
-          option Tajikistan 
-          option Tanzania 
-          option Thailand 
-          option Togo 
-          option Tonga 
-          option Trinidad and Tobago 
-          option Tunisia 
-          option Turkey 
-          option Turkmenistan 
-          option Tuvalu 
-          option Uganda 
-          option Ukraine 
-          option United Arab Emirates 
-          option United Kingdom 
-          option United States 
-          option Uruguay 
-          option Uzbekistan 
-          option Vanuatu 
-          option Vatican City 
-          option Venezuela 
-          option Vietnam 
-          option Yemen 
-          option Zambia 
-          option Zimbabwe
+          -for(i=0; i<countries.length; i++){
+            option= countries[i]
+          -}
       .form-group
-        label(for='city') 도시 및 상세 주소
-        input.form-control(type='city', id='city', name='city', placeholder='도시 및 상세 주소')
+        label(for='city') 도시 상세 주소
+        input#sample5_address.form-control(type='text', name ='city',placeholder='주소')
+        input(type='button', onclick='sample5_execDaumPostcode()', value='주소 검색', class="btn btn-default")
+        br
+        #map(style='width:300px;height:300px;margin-top:10px;display:none')
+        script(src='http://dmaps.daum.net/map_js_init/postcode.v2.js')
+        script(src='//apis.daum.net/maps/maps3.js?apikey=83cb0a10ddcf0d0cbf3e56cc8710d39c&libraries=services')
+        script.
+          var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+          mapOption = {
+          center: new daum.maps.LatLng(37.537187, 127.005476), // 지도의 중심좌표
+          level: 5 // 지도의 확대 레벨
+          };
+          //지도를 미리 생성
+          var map = new daum.maps.Map(mapContainer, mapOption);
+          //주소-좌표 변환 객체를 생성
+          var geocoder = new daum.maps.services.Geocoder();
+          //마커를 미리 생성
+          var marker = new daum.maps.Marker({
+          position: new daum.maps.LatLng(37.537187, 127.005476),
+          map: map
+          });
+          function sample5_execDaumPostcode() {
+          new daum.Postcode({
+          oncomplete: function(data) {
+          // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+          // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+          var fullAddr = data.address; // 최종 주소 변수
+          var extraAddr = ''; // 조합형 주소 변수
+          // 기본 주소가 도로명 타입일때 조합한다.
+          if(data.addressType === 'R'){
+          //법정동명이 있을 경우 추가한다.
+          if(data.bname !== ''){
+          extraAddr += data.bname;
+          }
+          // 건물명이 있을 경우 추가한다.
+          if(data.buildingName !== ''){
+          extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+          }
+          // 조합형주소의 유무에 따라 양쪽에 괄호를 추가하여 최종 주소를 만든다.
+          fullAddr += (extraAddr !== '' ? ' ('+ extraAddr +')' : '');
+          }
+          // 주소 정보를 해당 필드에 넣는다.
+          document.getElementById("sample5_address").value = fullAddr;
+          // 주소로 좌표를 검색
+          geocoder.addr2coord(data.address, function(status, result) {
+          // 정상적으로 검색이 완료됐으면
+          if (status === daum.maps.services.Status.OK) {
+          // 해당 주소에 대한 좌표를 받아서
+          var coords = new daum.maps.LatLng(result.addr[0].lat, result.addr[0].lng);
+          // 지도를 보여준다.
+          mapContainer.style.display = "block";
+          map.relayout();
+          // 지도 중심을 변경한다.
+          map.setCenter(coords);
+          // 마커를 결과값으로 받은 위치로 옮긴다.
+          marker.setPosition(coords)
+          }
+          });
+          }
+          }).open();
+          }
       .form-group
         label(for='money') 숙소 요금
-        input.form-control(type='money', id='money', name='money', placeholder='숙소 요금')
+        input.form-control(id='money', name='money', placeholder='숙소 요금')
       .form-group
         label(for='convenience') 주변 편의 시설
-        input.form-control(type='convenience', id='convenience', name='convenience', placeholder='편의 시설')
+        input.form-control(id='convenience', name='convenience', placeholder='편의 시설')
       .form-group
         label(for='rule') 이용 규칙
-        input.form-control(type='rule', id='rule',rows='4' name='rule', placeholder='이용 규칙')
-      
+        input.form-control(id='rule',rows='4', name='rule', placeholder='이용 규칙')
+      .form-group
+        label(for='fileupload')  Select a file to upload
+        input#fileupload(type='file', name='fileupload', value='fileupload')   
           
       div.form-actions
         a.btn.btn-default(href='javascript:window.history.back();') 뒤로 
