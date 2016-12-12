@@ -9,7 +9,7 @@ var schema = new Schema({
   checkIn: {type: Date, required: true, trim: true},
   checkOut: {type: Date, required: true, trim: true},
   person:{type:String,required: true, trim: true},
-  willCancel:{type:Boolean}
+  willCancel:{type:Boolean},
 }, {
   toJSON: {
     virtuals: true,

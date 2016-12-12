@@ -103,6 +103,65 @@ router.post('/', function(req, res, next) {
 });
 
 
+router.delete('/index/:id', function(req, res, next) {
+  Reservation.findOneAndRemove({_id: req.params.id}, function(err) {
+    if (err) {
+      return next(err);
+    }
+    res.redirect('/posts/index');
+  });
+});
 
+router.get('/index/:id', function(req, res, next) {
+  Post.find({email: req.user.email}, function(err, post) {
+    if (err) {
+      return next(err);
+    }
+      Reservation.find({email: req.user.email}, function(err, reservation) {
+        if (err) {
+          return next(err);
+        }
+   
+      res.render('reservations/index', {post:post,reservation: reservation});
+    });
+  });
+});
+
+router.get('/', needAuth, function(req, res, next) {
+  Post.find({email: req.user.email},function(err, posts) {
+    if (err) {
+      return res.status(500).json({message: 'internal error', desc: err});
+    }
+      Reservation.find({email: req.user.email}, function(err, reservations) {
+      if (err) {
+        return next(err);
+      }
+        res.json(reservations);
+      });
+    });
+});
+
+
+router.get('/', function(req, res, next) {
+  Post.find({}, function(err, docs) {
+    if (err) {
+      return next(err);
+    }
+    Reservation.find({}, function(err, docs) {
+    if (err) {
+      return next(err);
+    }
+      res.render('reservations/index', {posts: docs},{reservations: docs});
+    });
+  });
+});
+
+function needAuth(req, res, next) {
+  if (req.isAuthenticated()) {
+    next();
+  } else {
+    res.status(401).json({message: 'Not authorized'});
+  }
+}
 
 module.exports = router;

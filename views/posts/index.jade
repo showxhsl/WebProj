@@ -19,7 +19,9 @@ block content
               th 도시
               th 주소
               th 요금
-              th
+              th 예약 상태
+              
+              
           tbody
             each post in posts
               tr
@@ -39,12 +41,16 @@ block content
                     if post.reservation
                       td
                         a.btn.btn-xs.btn-default(href='/reservations/index/#{post.reservation}') 예약중
+                        a.btn.btn-xs.btn-default(data-id='/#{post.reservation}', class='delete') 거절
                   else
                     //- 숙소가 로그인 한 유저의 숙소인지 체크
                     if currentUser._id.toString() == post.user.toString() 
                       td
                         a.btn.btn-xs.btn-default(href='/posts/#{post.id}/edit') 수정
                         a.btn.btn-xs.btn-default(data-id=post.id, class='delete') 삭제
+                        if post.reservation
+                            a.btn.btn-xs.btn-default(href='/reservations/index/#{post.reservation}') 예약중
+                            a.btn.btn-xs.btn-default(data-id='/#{post.reservation}', class='delete') 거절
                     else
                       td
                         //- 로그인한 유저가 해당 숙소에 예약 중인지 체크
@@ -52,6 +58,7 @@ block content
                             a.btn.btn-xs.btn-default(href='/reservations/index/#{post.reservation}') 예약중
                         else
                             a.btn.btn-xs.btn-default(href='/reservations/new/#{post.id}') 예약
+
                     
     .row
       .col-sm-1.col-xs-2
@@ -90,6 +97,17 @@ block content
         var id = $(e.currentTarget).data('id');
         if (confirm('정말 삭제하시겠습니까?')) {
           $("#deleteForm").attr('action', "/posts/" + id + "?_method=DELETE").submit();          
+        }
+        return false;
+      });
+         
+    form#deleteForm(style='display:none', method="POST")
+            
+    script(type='text/javascript').
+      $(".delete").click(function(e) {
+        var id = $(e.currentTarget).data('id');
+        if (confirm('정말 삭제하시겠습니까?')) {
+          $("#deleteForm").attr('action', "/reservations/index" + id + "?_method=DELETE").submit();          
         }
         return false;
       });
