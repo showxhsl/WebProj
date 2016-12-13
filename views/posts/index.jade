@@ -41,7 +41,7 @@ block content
                     if post.reservation
                       td
                         a.btn.btn-xs.btn-default(href='/reservations/index/#{post.reservation}') 예약중
-                        a.btn.btn-xs.btn-default(data-id='#{post.reservation}', class='delete') 거절
+                        a.btn.btn-xs.btn-default(data-id='/#{post.reservation}', class='delete2') 거절
                   else
                     //- 숙소가 로그인 한 유저의 숙소인지 체크
                     if currentUser._id.toString() == post.user.toString() 
@@ -50,7 +50,7 @@ block content
                         a.btn.btn-xs.btn-default(data-id=post.id, class='delete') 삭제
                         if post.reservation
                             a.btn.btn-xs.btn-default(href='/reservations/index/#{post.reservation}') 예약중
-                            a.btn.btn-xs.btn-default(data-id='#{post.reservation}', class='delete') 거절
+                            a.btn.btn-xs.btn-default(data-id='/#{post.reservation}', class='delete2') 거절
                     else
                       td
                         //- 로그인한 유저가 해당 숙소에 예약 중인지 체크
@@ -104,10 +104,10 @@ block content
     form#deleteForm(style='display:none', method="POST")
             
     script(type='text/javascript').
-      $(".delete").click(function(e) {
+      $(".delete2").click(function(e) {
         var id = $(e.currentTarget).data('id');
         if (confirm('정말 삭제하시겠습니까?')) {
-          $("#deleteForm").attr('action', "/reservations/index/" + id + "?_method=DELETE").submit();          
+          $("#deleteForm").attr('action', "/reservations/index" + id + "?_method=DELETE").submit();          
         }
         return false;
       });
